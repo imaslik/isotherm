@@ -11,13 +11,16 @@ public class Program
 
     public class MyCommand:Command
     {
-        IsoChillerThermal isoChiller ;
+        IsoChillerThermal? isoChiller;
 
          [Argument(LongName ="accuracy", ShortName = 'a')]
         public double ThermalAccuracy {get;set;} = 0.5;
 
          [Argument(LongName ="stabilization",ShortName = 's')]
         public double ThermalStabilization {get;set;} = 1;
+
+        [Argument(LongName ="usb",ShortName = 'u')]
+        public int UsbPort {get;set;} = 80;
         public void Main()
         {
             
@@ -29,6 +32,7 @@ public class Program
                 isoChiller =  new IsoChillerThermal(this.App);
                 isoChiller.ThermalAccuracyWrapper = ThermalAccuracy.ToString();
                 isoChiller.ThermalStabilizationWrapper = ThermalStabilization.ToString();
+                isoChiller.ThermalUsbPortWrapper = UsbPort;
                 string errorMessage = string.Empty;
 
                 isoChiller.Initialize(out errorMessage);
@@ -38,13 +42,12 @@ public class Program
             }
             catch (System.Exception ex)
             {
-                
-                throw;
+                throw new SystemException(ex.Message);
             }
         }
 
         private void ReleaseIsoTherm(){
-            isoChiller.Release();
+            isoChiller?.Release();
         }
 
         public void SetTemperature(
@@ -52,9 +55,17 @@ public class Program
             double temperature
         )
         {
-            InitializeIsoTherm();
-            isoChiller.SetTemperature(temperature);
-            ReleaseIsoTherm();
+            try
+            {
+                InitializeIsoTherm();
+                isoChiller?.SetTemperature(temperature);
+                ReleaseIsoTherm();
+            }
+            catch (System.Exception ex)
+            {
+                App.Console.Error("Error: " + ex.Message, forceWrite:true);
+            }
+
         }
 
         public void SetTemperatureAsync(
@@ -62,16 +73,32 @@ public class Program
             double temperature
         )
         {
-            InitializeIsoTherm();
-            isoChiller.SetTemperatureAsync(temperature);
-            ReleaseIsoTherm();
+            try
+            {
+                InitializeIsoTherm();
+                isoChiller?.SetTemperatureAsync(temperature);
+                ReleaseIsoTherm();
+            }
+            catch (System.Exception ex)
+            {
+                App.Console.Error("Error: " + ex.Message, forceWrite:true);
+            }
+
         }
 
         public void GetTemperature()
         {
-            InitializeIsoTherm();
-            App.Console.Write(isoChiller.GetTemperature(),forceWrite:true);
-            ReleaseIsoTherm();
+            try
+            {
+                InitializeIsoTherm();
+                App.Console.Write(isoChiller?.GetTemperature(),forceWrite:true);
+                ReleaseIsoTherm();
+            }
+            catch (System.Exception ex)
+            {
+                App.Console.Error("Error: " + ex.Message, forceWrite:true);
+            }
+
         }
     }
 

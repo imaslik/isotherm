@@ -143,10 +143,23 @@ namespace IsoTherm.Thermals
             }
         }
 
+        public int ThermalUsbPortWrapper
+        {
+            get
+            {
+                return ThermalUsbPort;
+            }
+            set
+            {
+                ThermalUsbPort = value;
+            }
+        }
         // [TextSpecificParameter("DMM", true)]
         public uint ThermalIndex { get; private set; }
         public double ThermalAccuracy { get; private set; }
         public uint ThermalStabilizationTime { get; private set; }
+
+        public int ThermalUsbPort {get; private set;}
 
         public double MinTemperature
         {

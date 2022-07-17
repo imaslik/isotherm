@@ -17,16 +17,9 @@ namespace IsoTherm.Thermals
 
         public void Initialize(out string errorMessage)
         {
-            errorMessage = null;
+            errorMessage = string.Empty;
 
-            // UsbConnection usbConnection = _configuration.Connection as UsbConnection;
-            // if (usbConnection == null)
-            // {
-            //     errorMessage = "Wrong connection type, must be USB connection";
-            //     return;
-            // }
-
-            _usbAddress = 128;//Helpers.ConvertIntAsHex(50);
+            _usbAddress = Helpers.ConvertIntAsHex(this.ThermalUsbPort);
             _i2cDelay = 1;
 
             try
@@ -57,7 +50,7 @@ namespace IsoTherm.Thermals
                             return;
                         }
                     }
-                    Thread.Sleep(11 * 1000);
+                    Thread.Sleep(1000);
                 }
             }
             catch (Exception ex)
